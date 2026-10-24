@@ -3,6 +3,12 @@
   "build": {
     "dockerfile": "../Dockerfile"
   },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "vscode"
+    }
+  },
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -12,6 +18,5 @@
     }
   },
   "forwardPorts": [8000],
-  "postCreateCommand": "pip install -r requirements.txt",
-  "remoteUser": "root"
+  "postCreateCommand": "pip install -r requirements.txt"
 }
