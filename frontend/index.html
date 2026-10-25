@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#15233b">
+    <meta name="description" content="Care for your Digimon from your phone or computer.">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+    <title>DigiFarm</title>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="brand">
+        <img src="/icon.svg" alt="" width="48" height="48">
+        <div>
+          <p class="eyebrow">YOUR DIGITAL COMPANION</p>
+          <h1>DigiFarm</h1>
+        </div>
+      </header>
+
+      <section id="login-screen" class="panel login-panel">
+        <p class="eyebrow">WELCOME BACK</p>
+        <h2>Connect to your DigiFarm</h2>
+        <p class="muted">Enter the address of your API and your private access token.</p>
+        <form id="login-form">
+          <label for="api-url">Backend API address</label>
+          <input id="api-url" name="api-url" type="url" autocomplete="url" required>
+          <label for="token-input">API token</label>
+          <input id="token-input" name="token" type="password" minlength="32"
+                 autocomplete="current-password" placeholder="At least 32 characters" required>
+          <button class="primary-button" type="submit">Connect</button>
+        </form>
+      </section>
+
+      <section id="dashboard-screen" class="dashboard hidden">
+        <div class="dashboard-heading">
+          <div>
+            <p class="eyebrow">YOUR COMPANION</p>
+            <h2>DigiFarm</h2>
+          </div>
+          <button id="logout-button" class="quiet-button" type="button">Change connection</button>
+        </div>
+
+        <section class="panel status-panel" aria-labelledby="status-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">HOW ARE THEY DOING?</p>
+              <h3 id="status-heading">Digimon status</h3>
+            </div>
+            <button id="refresh-button" class="quiet-button" type="button">Refresh</button>
+          </div>
+          <pre id="status-display" aria-live="polite">Connect to load your Digimon's status.</pre>
+          <button id="feed-button" class="primary-button" type="button">Feed your Digimon</button>
+        </section>
+
+        <section class="panel chat-panel" aria-labelledby="chat-heading">
+          <p class="eyebrow">SAY HELLO</p>
+          <h3 id="chat-heading">Chat with your Digimon</h3>
+          <div id="chat-messages" class="chat-box" aria-live="polite" aria-relevant="additions"></div>
+          <form id="chat-form" class="chat-form">
+            <label class="visually-hidden" for="chat-input">Your message</label>
+            <input id="chat-input" name="message" type="text" maxlength="4000"
+                   placeholder="Ask them to study, train, or just say hi" required>
+            <button class="primary-button" type="submit">Send</button>
+          </form>
+        </section>
+      </section>
+      <p id="notice" class="notice hidden" role="alert"></p>
+    </main>
+  </body>
+</html>
