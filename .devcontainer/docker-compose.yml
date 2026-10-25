@@ -1,0 +1,19 @@
+services:
+  digifarm:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      PYTHONUNBUFFERED: "1"
+      DIGIFARM_DB_PATH: /workspace/data/digimon.db
+    user: "${DIGIFARM_UID:-1000}:${DIGIFARM_GID:-1000}"
+    volumes:
+      - ../data:/workspace/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
