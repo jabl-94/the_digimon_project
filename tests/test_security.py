@@ -109,6 +109,38 @@ class ApiSecurityTests(unittest.TestCase):
         asyncio.run(run())
         self.assertEqual(response_messages[0]["status"], 413)
 
+    def test_cors_preflight_allows_local_frontend_and_rejects_other_origins(self):
+        async def exercise_cors():
+            async with httpx.AsyncClient(
+                transport=httpx.ASGITransport(app=main.app),
+                base_url="http://testserver",
+            ) as client:
+                allowed = await client.options(
+                    "/status",
+                    headers={
+                        "Origin": "http://localhost:5173",
+                        "Access-Control-Request-Method": "GET",
+                        "Access-Control-Request-Headers": "authorization",
+                    },
+                )
+                rejected = await client.options(
+                    "/status",
+                    headers={
+                        "Origin": "https://untrusted.example",
+                        "Access-Control-Request-Method": "GET",
+                        "Access-Control-Request-Headers": "authorization",
+                    },
+                )
+
+            self.assertEqual(allowed.status_code, 200)
+            self.assertEqual(
+                allowed.headers["access-control-allow-origin"],
+                "http://localhost:5173",
+            )
+            self.assertNotIn("access-control-allow-origin", rejected.headers)
+
+        asyncio.run(exercise_cors())
+
     def test_status_endpoint_requires_authentication(self):
         token = "c" * 32
 

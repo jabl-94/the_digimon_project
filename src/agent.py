@@ -1,14 +1,12 @@
 import os
-
+from google import genai
+from google.genai import types
 from src.engine import train_strength, study_iq, get_digimon_status
 
 def chat_with_digimon(user_message: str) -> str:
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY is not configured")
-
-    from google import genai
-    from google.genai import types
 
     digimon = get_digimon_status()
     if digimon is None:
@@ -29,16 +27,15 @@ def chat_with_digimon(user_message: str) -> str:
     Speak with a lively, enthusiastic personality fitting a virtual pet.
     """
     
-    # Pass Python functions directly as tools for automatic tool calling
     tools = [train_strength, study_iq]
     
     with genai.Client(
         api_key=api_key,
         http_options=types.HttpOptions(timeout=30_000),
     ) as client:
-        response = client.models.generate_content(
+        # Use client.chats.create for Automatic Function Calling (AFC) support[cite: 3]
+        chat = client.chats.create(
             model='gemini-3.8-flash',
-            contents=f"{system_prompt}\n\nUser: {user_message}",
             config=types.GenerateContentConfig(
                 tools=tools,
                 temperature=0.7,
@@ -48,7 +45,8 @@ def chat_with_digimon(user_message: str) -> str:
                 ),
             ),
         )
-
+        response = chat.send_message(f"{system_prompt}\n\nUser: {user_message}")
+    
     if response.text is None:
         raise RuntimeError("Gemini returned an empty response")
     return response.text

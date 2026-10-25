@@ -8,11 +8,13 @@ services:
     environment:
       PYTHONUNBUFFERED: "1"
       DIGIFARM_DB_PATH: /workspace/data/digimon.db
+      DIGIFARM_CORS_ORIGINS: "${DIGIFARM_CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}"
+      DIGIFARM_FRONTEND_URL: "${DIGIFARM_FRONTEND_URL:-}"
     user: "${DIGIFARM_UID:-1000}:${DIGIFARM_GID:-1000}"
     volumes:
       - ../data:/workspace/data
     ports:
-      - "127.0.0.1:8000:8000"
+      - "${DIGIFARM_BIND_ADDRESS:-127.0.0.1}:8000:8000"
     security_opt:
       - no-new-privileges:true
     cap_drop:
